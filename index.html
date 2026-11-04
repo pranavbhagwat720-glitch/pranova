@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pranova PDF</title>
+<meta name="description" content="Pranova PDF. Your Documents. Our Responsibility.">
+<meta name="theme-color" content="#4f7a5c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<style>
+:root{--bg:#f6f2ea;--surface:rgba(255,255,255,.62);--solid:#fffdf8;--text:#1d2a22;--muted:#5d6b62;--accent:#4f7a5c;--accent2:#2f5a40;--on-accent:#fff;--line:rgba(40,70,50,.14);--shadow:0 10px 30px rgba(40,60,45,.14);--danger:#a63a2f;--pro:#9a6b1f;--prem:#5b4a9a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101712;--surface:rgba(30,44,35,.6);--solid:#1a251d;--text:#eaf1ea;--muted:#a3b4a8;--accent:#86b595;--accent2:#a9d3b6;--on-accent:#0e1a12;--line:rgba(190,230,200,.16);--shadow:0 10px 30px rgba(0,0,0,.45);--danger:#e58b80;--pro:#e2b667;--prem:#b4a5ee}}
+:root[data-theme="dark"]{--bg:#101712;--surface:rgba(30,44,35,.6);--solid:#1a251d;--text:#eaf1ea;--muted:#a3b4a8;--accent:#86b595;--accent2:#a9d3b6;--on-accent:#0e1a12;--line:rgba(190,230,200,.16);--shadow:0 10px 30px rgba(0,0,0,.45);--danger:#e58b80;--pro:#e2b667;--prem:#b4a5ee}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:-20% -10% auto auto;width:60vw;height:60vw;background:radial-gradient(circle,var(--accent) 0,transparent 65%);opacity:.16;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:16px 18px 90px}
+header{display:flex;align-items:center;gap:12px;padding:8px 0 20px}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,var(--accent),var(--accent2));display:grid;place-items:center;color:var(--on-accent);font-weight:800;box-shadow:var(--shadow)}
+header h1{font-size:1.15rem;margin:0;flex:1}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:14px;padding:10px 16px;cursor:pointer;min-height:44px;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.primary{background:linear-gradient(160deg,var(--accent),var(--accent2));color:var(--on-accent);border-color:transparent;font-weight:600}
+.btn:focus-visible,.card:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;margin-bottom:28px}
+.hero h2{font-size:clamp(1.8rem,5vw,3rem);line-height:1.08;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:var(--muted);margin:0 0 18px;max-width:46ch}
+.stage{perspective:900px;height:260px;display:grid;place-items:center}
+.stack{position:relative;width:150px;height:200px;transform-style:preserve-3d;transform:rotateX(55deg) rotateZ(-30deg);animation:float 7s ease-in-out infinite}
+.stack i{position:absolute;inset:0;border-radius:12px;background:var(--solid);border:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.stack i:nth-child(1){transform:translateZ(0)}.stack i:nth-child(2){transform:translateZ(26px);background:color-mix(in srgb,var(--accent) 22%,var(--solid))}.stack i:nth-child(3){transform:translateZ(52px)}.stack i:nth-child(4){transform:translateZ(78px);background:linear-gradient(150deg,var(--accent),var(--accent2));display:grid;place-items:center;color:var(--on-accent);font-weight:800;font-size:1.6rem}
+.stack i:nth-child(3)::after{content:"";position:absolute;left:18px;right:18px;top:28px;height:60px;background:repeating-linear-gradient(var(--line) 0 2px,transparent 2px 12px)}
+@keyframes float{50%{transform:rotateX(50deg) rotateZ(-22deg) translateY(-8px)}}
+.tools-head{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.tools-head h3{margin:0;flex:1;font-size:1.3rem}
+.search{flex:1 1 220px;border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:14px;padding:10px 14px;min-height:44px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:99px;padding:6px 14px;cursor:pointer;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;perspective:1000px}
+.card{position:relative;text-align:left;border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:22px;padding:16px;cursor:pointer;box-shadow:var(--shadow);transform-style:preserve-3d;transition:transform .2s ease,box-shadow .2s;will-change:transform;display:block;width:100%}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 40%);pointer-events:none;opacity:.6}
+.ico{width:54px;height:54px;position:relative;transform:translateZ(30px);margin-bottom:12px;transform-style:preserve-3d}
+.ico b,.ico span{position:absolute;border-radius:12px}
+.ico b{inset:0;background:linear-gradient(145deg,var(--accent),var(--accent2));box-shadow:5px 7px 0 -1px color-mix(in srgb,var(--accent2) 60%,#000),0 10px 16px rgba(0,0,0,.2);display:grid;place-items:center;color:var(--on-accent);font-weight:800;font-size:1.25rem}
+.ico span{inset:-5px 5px 5px -5px;background:color-mix(in srgb,var(--accent) 30%,var(--solid));z-index:-1;transform:translateZ(-10px)}
+.card h4{margin:0 0 4px;font-size:1rem;transform:translateZ(18px)}
+.card p{margin:0;color:var(--muted);font-size:.86rem;transform:translateZ(10px)}
+.badge{position:absolute;top:12px;right:12px;font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:99px;border:1px solid currentColor}
+.badge.available{color:var(--accent2)}.badge.pro{color:var(--pro)}.badge.premium{color:var(--prem)}.badge.soon{color:var(--muted)}
+.fav{position:absolute;bottom:10px;right:10px;border:0;background:transparent;cursor:pointer;font-size:1.2rem;min-width:36px;min-height:36px;color:var(--muted)}
+.fav[aria-pressed="true"]{color:var(--pro)}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:34px}
+.plan{border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:22px;padding:20px;box-shadow:var(--shadow)}
+.plan h4{margin:0}.plan .price{font-size:1.4rem;font-weight:700;margin:8px 0}.plan ul{padding-left:18px;color:var(--muted);font-size:.9rem;margin:8px 0}
+.note{color:var(--muted);font-size:.85rem}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:var(--surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:5}
+nav.tabs a{color:var(--text);text-decoration:none;font-size:.78rem;padding:6px 10px;border-radius:12px;min-height:44px;display:grid;place-items:center}
+.overlay{position:fixed;inset:0;background:rgba(10,20,14,.5);z-index:10;display:none;align-items:center;justify-content:center;padding:14px}
+.overlay.open{display:flex}
+.sheet{width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--solid);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:var(--shadow)}
+.sheet h3{margin:0 0 4px}
+.drop{border:2px dashed var(--line);border-radius:18px;padding:26px 14px;text-align:center;cursor:pointer;margin:14px 0;color:var(--muted)}
+.drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.files{list-style:none;padding:0;margin:0 0 12px;font-size:.9rem}
+.files li{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.files li span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.files button{border:0;background:transparent;cursor:pointer;min-width:34px;min-height:34px;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.row label{font-size:.9rem;color:var(--muted)}
+.row input,.row select,.sheet textarea{border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 10px;min-height:40px}
+.sheet textarea{width:100%;min-height:120px}
+.bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin:12px 0}
+.bar div{height:100%;width:0;background:var(--accent);transition:width .2s}
+.msg{padding:10px 12px;border-radius:12px;font-size:.9rem;margin:10px 0}
+.msg.err{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+.msg.ok{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+html{scroll-behavior:smooth}.wrap{padding-bottom:140px}.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.in{animation:rise .55s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--i,0)*45ms)}@keyframes rise{from{opacity:0;transform:translateY(26px) rotateX(-28deg) scale(.92)}}
+.ico{width:60px;height:60px;transform:translateZ(34px) rotateX(22deg) rotateY(-26deg);animation:bob 5s ease-in-out infinite;animation-delay:calc(var(--i,0)*-.4s)}
+.ico b{--ex:color-mix(in srgb,var(--accent2) 70%,#000);box-shadow:inset 0 2px 2px rgba(255,255,255,.5),1px 1px 0 var(--ex),2px 2px 0 var(--ex),3px 3px 0 var(--ex),4px 4px 0 var(--ex),5px 5px 0 var(--ex),6px 6px 0 var(--ex),9px 15px 18px rgba(0,0,0,.28)}
+@keyframes bob{50%{transform:translateZ(42px) rotateX(15deg) rotateY(-16deg) translateY(-4px)}}
+.card:hover .ico{animation:none;transform:translateZ(52px) rotateX(8deg) rotateY(-8deg) scale(1.1)}
+nav.tabs{left:50%;right:auto;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:max-content;max-width:100%;gap:12px;padding:0;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+nav.tabs a{width:64px;height:64px;border-radius:50%;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.62rem;font-weight:600;background:radial-gradient(120% 120% at 30% 12%,rgba(255,255,255,.7),rgba(255,255,255,.1) 55%),var(--surface);border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);box-shadow:inset 0 1.5px 1px rgba(255,255,255,.85),inset 0 -7px 12px rgba(255,255,255,.12),0 10px 22px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.3,1.7,.5,1)}
+nav.tabs a b{font-size:1.3rem;line-height:1;font-weight:400}nav.tabs a:hover,nav.tabs a:focus-visible{transform:translateY(-7px) scale(1.1)}nav.tabs a.on{background:linear-gradient(160deg,var(--accent),var(--accent2));color:var(--on-accent)}
+.sheet.scan{width:min(980px,100%);padding:16px}.scanbody{display:grid;gap:14px;margin-top:8px}@media(min-width:860px){.scanbody{grid-template-columns:1.25fr 1fr}}
+.vf{position:relative;width:min(100%,calc(62vh*var(--ar,.75)));margin:0 auto;aspect-ratio:var(--ar,.75);border-radius:22px;overflow:hidden;background:#0b120d;box-shadow:0 18px 40px rgba(0,0,0,.35);transform:perspective(900px) rotateX(3deg)}
+.vf video,.vf canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);padding:6px 14px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:.82rem;text-align:center;max-width:92%}
+.sweep{display:none;position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#9fe0b0,transparent);box-shadow:0 0 18px #9fe0b0;animation:sw 2.4s ease-in-out infinite}.vf.smart .sweep{display:block}@keyframes sw{50%{top:100%}}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.flash.go{animation:fl .45s}@keyframes fl{from{opacity:.9}to{opacity:0}}
+.ctl{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
+.shut{width:68px;height:68px;border-radius:50%;border:4px solid var(--accent);background:radial-gradient(circle at 35% 30%,#fff,#dfe9e1 60%);box-shadow:0 8px 18px rgba(0,0,0,.25),inset 0 -6px 10px rgba(0,0,0,.12);cursor:pointer;transition:transform .15s}.shut:active{transform:scale(.88)}.shut:disabled{opacity:.4}
+.nm{display:block;font-size:.85rem;color:var(--muted)}.nm input{width:100%;margin-top:4px;border:1px solid var(--line);background:transparent;border-radius:12px;padding:10px 12px;min-height:44px}
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin:10px 0;perspective:800px;max-height:36vh;overflow:auto}
+.pc{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow);transform:rotateY(-6deg)}.pc canvas{display:block;width:100%;height:auto}
+.pc.new{animation:pin .7s cubic-bezier(.2,.9,.3,1.3)}@keyframes pin{from{opacity:0;transform:translateY(-80px) rotateY(90deg) scale(1.6)}}
+.pc .pb{position:absolute;bottom:0;left:0;right:0;display:flex;background:rgba(0,0,0,.55)}.pc .pb button{flex:1;border:0;background:transparent;color:#fff;min-height:34px;cursor:pointer}
+.files li{animation:fin .45s cubic-bezier(.2,.9,.3,1.2) both}@keyframes fin{from{opacity:0;transform:translateX(-30px) rotateX(-40deg)}}
+.bar div{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));background-size:200% 100%;animation:shim 1.2s linear infinite}@keyframes shim{to{background-position:-200% 0}}
+.drop{transition:transform .2s,border-color .2s}.drop:hover,.drop.over{transform:translateY(-3px) scale(1.01)}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:10px}
+.pl-sub{color:var(--muted);margin:4px 0 16px;font-size:.92rem}
+.sub{display:block;font-size:.82rem;font-weight:500;color:var(--muted);margin-top:2px}
+.plan .sup{color:var(--muted);font-size:.85rem;margin:-6px 0 14px}
+.about{margin-top:48px;padding-top:24px;border-top:1px solid var(--line)}.brand-line{font-size:clamp(1.3rem,4vw,1.8rem);font-weight:700;letter-spacing:-.01em;margin:4px 0 10px}
+.seg{display:inline-flex;padding:4px;border-radius:99px;border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.seg button{border:0;background:transparent;border-radius:99px;padding:9px 22px;min-height:44px;cursor:pointer;font-weight:600;color:var(--muted);transition:background .25s,color .25s}
+.seg button[aria-pressed="true"]{background:linear-gradient(160deg,var(--accent),var(--accent2));color:var(--on-accent);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.seg em{font-style:normal;font-size:.72rem;margin-left:8px;opacity:.9}
+.plans{grid-template-columns:repeat(auto-fit,minmax(270px,1fr));align-items:stretch;margin-top:20px}
+.plan{display:flex;flex-direction:column;padding:26px;border-radius:26px;position:relative;transition:transform .3s}.plan:hover{transform:translateY(-4px)}
+.plan.feat{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+.plan .nm2{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-right:90px}
+.plan .tag{font-style:italic;color:var(--accent2);margin:6px 0 16px;font-size:.98rem}
+.plan .amt{font-size:2.3rem;font-weight:700;letter-spacing:-.02em;line-height:1}.plan .per{color:var(--muted);font-size:.9rem;margin-left:6px}
+.plan .eq{color:var(--muted);font-size:.83rem;min-height:2.8em;margin:8px 0 14px}
+.plan hr{border:0;border-top:1px solid var(--line);margin:0 0 12px;width:100%}
+.plan ul{list-style:none;padding:0;margin:0 0 20px;flex:1;color:var(--text)}
+.plan li{display:flex;gap:10px;padding:5px 0;font-size:.9rem}.plan li::before{content:"✓";color:var(--accent2);font-weight:700}
+.plan li.pl{color:var(--muted)}.plan li.pl::before{content:"○";color:var(--muted)}
+.plan .btn{width:100%}
+#plans .m,#plans .y{display:none}#plans[data-bill="m"] .m,#plans[data-bill="y"] .y{display:inline}
+.plan .st{font-size:.7rem;font-weight:700;border:1px solid currentColor;border-radius:99px;padding:2px 10px;position:absolute;top:22px;right:22px;color:var(--pro)}
+html,body{max-width:100%;overflow-x:clip}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;margin:0 -18px 8px;padding:8px 18px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 72%,transparent)}
+.btn:active,.chip:active,.card:active{transform:scale(.96)}.btn,.chip{transition:transform .15s,background .2s}
+.card h4{overflow-wrap:anywhere}
+.overlay{display:flex;visibility:hidden;opacity:0;pointer-events:none;background:rgba(10,20,14,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:opacity .22s,visibility 0s .22s}
+.overlay.open{visibility:visible;opacity:1;pointer-events:auto;transition:opacity .22s}
+.overlay.closing{opacity:0;pointer-events:none;transition:opacity .22s,visibility 0s .22s}
+.sheet{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
+.overlay.open:not(.closing) .sheet{animation:spring .5s cubic-bezier(.2,1.1,.3,1) both}
+@keyframes spring{from{opacity:0;transform:translate(var(--dx,0px),var(--dy,40px)) scale(.3)}50%{opacity:1}to{opacity:1;transform:none}}
+.overlay.closing .sheet{transition:transform .22s,opacity .22s;transform:translateY(16px) scale(.96);opacity:0}
+.xbtn{position:sticky;top:0;float:right;z-index:3;width:40px;height:40px;margin:-6px -6px 0 10px;border-radius:50%;border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);cursor:pointer;font-size:1rem;color:var(--text)}
+.hi{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,var(--accent),var(--accent2));color:var(--on-accent);margin-right:10px;font-size:1rem;vertical-align:middle}
+.th{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.sheet .actions{position:sticky;bottom:-18px;padding-top:16px;background:linear-gradient(transparent,var(--solid) 28%)}
+.msg.ok::before{content:"✓";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--on-accent);margin-right:8px;font-size:.8rem;animation:pop .45s cubic-bezier(.3,1.7,.5,1)}@keyframes pop{from{transform:scale(0)}}
+#plans .amt span,#plans .eq span,#plans .per span{animation:swap .3s}@keyframes swap{from{opacity:0;transform:translateY(6px)}}
+.toast{position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);z-index:30;padding:10px 18px;border-radius:99px;background:var(--solid);border:1px solid var(--line);box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s,transform .35s cubic-bezier(.3,1.5,.5,1);font-size:.9rem}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:640px){.overlay{align-items:flex-end;padding:0}.sheet,.sheet.scan{width:100%;border-radius:26px 26px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px))}.overlay.open:not(.closing) .sheet{animation:slideup .45s cubic-bezier(.2,.9,.3,1) both}.overlay.closing .sheet{transform:translateY(100%);opacity:1}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.card{padding:12px}.card h4{font-size:.92rem}.card p{font-size:.78rem}.ico{width:50px;height:50px}.card .badge{top:10px;right:10px;font-size:.62rem;padding:2px 7px}.hero h2{font-size:1.7rem}}
+@keyframes slideup{from{transform:translateY(100%)}}
+.ctl{flex-wrap:wrap}#tor[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}.steps span{font-size:.78rem;padding:4px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+.sheet.scan{background:color-mix(in srgb,var(--solid) 86%,transparent);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6)}
+.adj{display:grid;gap:6px;margin:12px 0 0}.adj label{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--muted)}.adj input{flex:1;accent-color:var(--accent);min-height:28px}
+.pg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.pc .pb{flex-wrap:wrap}.pc .pb button{flex:1 1 33%}.pc .pb button.w{flex:1 1 50%}
+.editor{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom));animation:rise .3s both}
+.ed-stage{position:relative;max-width:100%;border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}.ed-stage canvas,.ed-stage svg,.ed-stage img{position:absolute;inset:0;width:100%;height:100%}.ed-stage svg{touch-action:none}
+@media(min-width:1024px){nav.tabs{left:20px;top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column}.wrap{padding-left:120px;padding-right:30px;max-width:1280px}.toast{bottom:30px}}
+@media(prefers-reduced-transparency:reduce){*{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.card,.plan,nav.tabs a,header{background:var(--solid)!important}}
+@media (max-width:420px){nav.tabs{gap:8px}nav.tabs a{width:56px;height:56px}}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.stage{height:220px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{transform:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo" aria-hidden="true">P</div><h1>Pranova PDF</h1><button class="btn" id="themeBtn" aria-label="Toggle light or dark theme">Theme</button></header>
+
+<section class="hero" id="home">
+ <div>
+  <div class="eyebrow">Your Documents. Our Responsibility.</div><h2>Make, merge and tidy PDFs, right in your browser.</h2>
+  <p>Files are processed on your device with an open-source PDF library. They are not uploaded for the tools marked Available.</p>
+  <div class="btnrow"><button class="btn primary" id="startImg">Images to PDF</button><button class="btn" id="startScan">◎ Smart Scan</button></div>
+ </div>
+ <div class="stage" aria-hidden="true"><div class="stack" id="stack"><i></i><i></i><i></i><i>PDF</i></div></div>
+</section>
+
+<section id="tools">
+ <div class="tools-head"><h3>All PDF tools<span class="sub">Every Page. Every Detail. Made Simple.</span></h3><input class="search" id="q" type="search" placeholder="Search tools" aria-label="Search tools"></div>
+ <div class="chips" id="chips" role="group" aria-label="Filter tools"></div>
+ <div class="grid" id="grid"></div>
+</section>
+
+<section id="plans" data-bill="y">
+ <h3 style="margin-top:40px;margin-bottom:0">Plans</h3><p class="pl-sub">Choose how you’d like to be billed. ✓ means available now, ○ means planned and not built yet.</p><div class="seg" role="group" aria-label="Billing period"><button data-bill="m" aria-pressed="false">Monthly</button><button data-bill="y" aria-pressed="true">Yearly<em>save 58%</em></button></div>
+ <div class="plans">
+  <div class="plan"><div class="nm2">Pranova PDF Free</div><div class="tag">Start simple. Get more done.</div><div><span class="amt">₹0</span><span class="per">forever</span></div><div class="eq">Core PDF tools for everyday document tasks. No account needed.</div><hr><ul><li>Images to PDF (JPG, PNG, WebP)</li><li>Text to PDF</li><li>Merge PDFs, with reordering</li><li>Extract pages</li><li>Delete pages</li><li>Rotate pages</li><li>Smart Scan with auto-detect and auto-capture</li><li>Manual scan with in-app camera</li><li>Scan filters and file renaming</li><li>Multi-page scans you can reorder</li><li>Processed on your device</li><li>Limit: 50 MB per file</li></ul><a class="btn" href="#tools" style="text-align:center;text-decoration:none;display:grid;place-items:center">Use free tools</a></div>
+  <div class="plan feat"><span class="st">In development</span><div class="nm2">Pranova PDF Pro</div><div class="tag">Less Editing. More Done.</div><p class="sup">Powerful PDF tools for people who want to work faster, organize documents easily, and get more done.</p><div><span class="amt"><span class="m">₹199</span><span class="y">₹999</span></span><span class="per"><span class="m">per month</span><span class="y">per year</span></span></div><div class="eq"><span class="m">Billed monthly. Yearly is ₹999, about 58% less than 12 months.</span><span class="y">About ₹83 a month, billed once a year. Monthly is ₹199.</span></div><hr><ul><li>Everything in Free</li><li class="pl">Advanced PDF editing</li><li class="pl">OCR and searchable PDFs</li><li class="pl">Batch merge, split, rotate and compress</li><li class="pl">PDF to Word, Excel and PowerPoint, and back</li><li class="pl">Password protection</li><li class="pl">Watermarks, page numbers, headers and footers</li><li class="pl">Form filling and metadata editing</li><li class="pl">Higher processing limits</li></ul><button class="btn primary" data-setup>Not on sale yet</button></div>
+  <div class="plan"><span class="st">In development</span><div class="nm2">Pranova PDF Premium</div><div class="tag">Don’t Edit It. Just Tell AI.</div><p class="sup">Let AI help you understand, summarize, compare, and work with your documents through simple instructions.</p><div><span class="amt"><span class="m">₹399</span><span class="y">₹1,999</span></span><span class="per"><span class="m">per month</span><span class="y">per year</span></span></div><div class="eq"><span class="m">Billed monthly. Yearly is ₹1,999, about 58% less than 12 months.</span><span class="y">About ₹167 a month, billed once a year. Monthly is ₹399.</span></div><hr><ul><li>Everything in Pro</li><li class="pl">Chat with your PDF, with page references</li><li class="pl">Summaries and plain-language explanations</li><li class="pl">Translation of text or documents</li><li class="pl">Document comparison</li><li class="pl">Table, receipt and invoice extraction</li><li class="pl">AI editing with preview and your approval</li><li class="pl">Usage limits shown before you start</li></ul><button class="btn primary" data-setup>Not on sale yet</button></div>
+ </div>
+ <p class="note">Planned renewal terms: subscriptions would renew automatically until you cancel, and you could cancel any time from your Google Play subscriptions. Full terms will be shown before any purchase. Your files stay yours and downloadable if a plan ends. Prices shown are the planned India prices. Purchasing is not connected yet: it needs Google Play Billing with server-side verification, and other regions should use localised Play prices. Nothing here can be bought or unlocked today.</p>
+</section>
+<footer class="about" id="about"><div class="eyebrow">About Pranova PDF</div><p class="brand-line">Your Documents. Our Responsibility.</p><p class="note">Pranova PDF is built to be a careful, straightforward place to create, organize and scan documents. As built today, the free tools run on your device and your files are not sent to a server for them. For any future feature that needs a server or AI service, we will say clearly what happens to your files before you use it.</p><p class="note" id="legal">Privacy, Terms, cancellation and support pages still need to be written and reviewed by you before launch.</p></footer>
+</div>
+
+<nav class="tabs" aria-label="Main"><a href="#home" class="on"><b>⌂</b>Home</a><a href="#tools"><b>▦</b>Tools</a><a href="#tools" id="scanNav"><b>◎</b>Scan</a><a href="#tools" id="favNav"><b>★</b>Favourites</a><a href="#plans"><b>◆</b>Plans</a></nav>
+
+<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="st"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const {PDFDocument,StandardFonts,degrees,rgb}=PDFLib;
+const $=(s,r=document)=>r.querySelector(s);
+const TOOLS=[
+{id:"img",n:"Images to PDF",d:"JPG, PNG or WebP into one PDF",s:"available",c:"Create",g:"▤"},
+{id:"text",n:"Text to PDF",d:"Type or paste text into a PDF",s:"available",c:"Create",g:"T"},
+{id:"merge",n:"Merge PDFs",d:"Combine files in your order",s:"available",c:"Organize",g:"⊞"},
+{id:"extract",n:"Extract pages",d:"Keep only the pages you pick",s:"available",c:"Organize",g:"⇥"},
+{id:"delete",n:"Delete pages",d:"Remove unwanted pages",s:"available",c:"Organize",g:"✕"},
+{id:"rotate",n:"Rotate pages",d:"Turn all or some pages",s:"available",c:"Organize",g:"↻"},
+{id:"ocr",n:"OCR",d:"Searchable PDFs from scans",s:"pro",c:"Pro tools",g:"Aa"},
+{id:"word",n:"PDF to Word",d:"Needs a conversion backend",s:"pro",c:"Pro tools",g:"W"},
+{id:"lock",n:"Password protect",d:"Needs an encryption engine",s:"pro",c:"Pro tools",g:"🔒"},
+{id:"mark",n:"Watermark",d:"Stamp text or images on pages",s:"pro",c:"Pro tools",g:"◈"},
+{id:"ai",n:"AI Assistant",d:"Ask questions, summarize",s:"premium",c:"AI",g:"✦"},
+{id:"smart",n:"Smart Scan",d:"Finds the page and captures it automatically",s:"available",c:"Scan",g:"◎"},
+{id:"scan",n:"Scan documents",d:"Manual capture with filters",s:"available",c:"Scan",g:"▣"}
+];
+const LBL={available:"Available",pro:"Pro",premium:"Premium",soon:"Coming soon"};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let favs=store.get("pp_favs",[]),cat="All",showFav=false,urls=[];
+
+/* theme */
+const root=document.documentElement;
+const t0=store.get("pp_theme",null);if(t0)root.dataset.theme=t0;
+$("#themeBtn").onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;const n=dark?"light":"dark";root.dataset.theme=n;store.set("pp_theme",n);toast(n==="dark"?"Dark theme":"Light theme")};
+
+/* grid */
+function renderChips(){const cats=["All",...new Set(TOOLS.map(t=>t.c))];$("#chips").innerHTML="";cats.forEach(c=>{const b=document.createElement("button");b.className="chip";b.textContent=c;b.setAttribute("aria-pressed",String(c===cat&&!showFav));b.onclick=()=>{cat=c;showFav=false;renderChips();renderGrid()};$("#chips").appendChild(b)})}
+function renderGrid(){const q=$("#q").value.trim().toLowerCase();const g=$("#grid");g.innerHTML="";
+ const list=TOOLS.filter(t=>(cat==="All"||t.c===cat)&&(!showFav||favs.includes(t.id))&&(t.n+" "+t.d).toLowerCase().includes(q));
+ if(!list.length){g.innerHTML='<p class="note">'+(showFav?"No favorites yet. Tap the star on a tool.":"No tools match your search.")+"</p>";return}
+ list.forEach((t,ix)=>{const w=document.createElement("div");w.style.position="relative";w.className="in";w.style.setProperty("--i",ix);
+  w.innerHTML=`<button class="card" aria-label="${t.n}. ${LBL[t.s]}. ${t.d}"><span class="badge ${t.s}">${LBL[t.s]}</span><div class="ico"><span></span><b>${t.g}</b></div><h4>${t.n}</h4><p>${t.d}</p></button><button class="fav" aria-pressed="${favs.includes(t.id)}" aria-label="Favorite ${t.n}">★</button>`;
+  const card=$(".card",w);card.onclick=()=>openTool(t);
+  card.addEventListener("pointermove",e=>{if(e.pointerType==="touch"||matchMedia("(prefers-reduced-motion:reduce)").matches)return;const r=card.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform=`rotateY(${x*14}deg) rotateX(${-y*14}deg) translateZ(8px)`});
+  card.addEventListener("pointerleave",()=>card.style.transform="");
+  $(".fav",w).onclick=ev=>{favs=favs.includes(t.id)?favs.filter(i=>i!==t.id):[...favs,t.id];store.set("pp_favs",favs);renderGrid();toast(favs.includes(t.id)?"Added to favourites":"Removed from favourites")};
+  g.appendChild(w)})}
+$("#q").oninput=renderGrid;
+$("#favNav").onclick=()=>{showFav=true;renderChips();renderGrid()};
+$("#startImg").onclick=()=>openTool(TOOLS[0]);
+document.querySelectorAll("[data-setup]").forEach(b=>b.onclick=()=>info("Requires setup","Billing is not connected. To sell Pro or Premium you need Google Play Billing in a Capacitor Android build, plus server-side purchase verification. Paid tools stay locked until that is done."));
+/* hero parallax */
+addEventListener("pointermove",e=>{const s=$("#stack");if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;s.style.animation="none";const x=e.clientX/innerWidth-.5,y=e.clientY/innerHeight-.5;s.style.transform=`rotateX(${55-y*20}deg) rotateZ(${-30+x*40}deg)`});
+
+/* sheet helpers */
+const ov=$("#ov"),sheet=$("#sheet");
+function close(fp){if(ov.classList.contains("closing"))return;if(files.length&&!scan&&!$("#out .ok")&&!confirm("Discard the selected files?"))return;if(scan&&scan.pages.length&&!scan.saved&&!confirm("Discard the scanned pages?"))return;aborted=true;stopScan();ov.classList.add("closing");if(fp!==true&&pushed)try{history.back()}catch(e){}setTimeout(()=>{ov.classList.remove("open","closing");urls.forEach(u=>URL.revokeObjectURL(u));urls=[];files=[];sheet.innerHTML="";sheet.className="sheet";lastF&&lastF.focus&&lastF.focus()},230)}
+ov.addEventListener("click",e=>{if(e.target===ov)close()});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&ov.classList.contains("open"))close()});
+function info(title,body){sheet.innerHTML=`<h3 id="st">${title}</h3><p>${body}</p><div class="actions"><button class="btn primary" id="x">Close</button></div>`;$("#x").onclick=close;ov.classList.add("open");$("#x").focus()}
+
+/* tool dialog */
+let files=[],aborted=false;
+function openTool(t){if(t.id==="scan"||t.id==="smart"){openScan(t.id==="smart");return}
+ if(t.s!=="available"){const need={pro:"Pro plan",premium:"Premium plan",soon:"a future release"}[t.s];info(t.n,`${{pro:"<b>Less Editing. More Done.</b><br>",premium:"<b>Don’t Edit It. Just Tell AI.</b><br>",soon:""}[t.s]}${t.n} needs ${need}. ${t.s==="soon"?"It is not built yet.":"It also needs a processing backend that is not connected, so it is locked rather than faked."}`);return}
+ files=[];aborted=false;
+ const pdfs=["merge","extract","delete","rotate"].includes(t.id);
+ const multi=t.id==="img"||t.id==="merge";
+ const accept=t.id==="img"?"image/jpeg,image/png,image/webp":"application/pdf";
+ let opts="";
+ if(t.id==="img")opts=`<div class="row"><label>Page size <select id="o1"><option value="a4">A4 with margins</option><option value="fit">Fit to image</option></select></label><label>Orientation <select id="o2"><option value="p">Portrait</option><option value="l">Landscape</option></select></label><label>Margin <select id="o3"><option value="36">Normal</option><option value="18">Small</option><option value="0">None</option></select></label></div>`;
+ if(t.id==="extract"||t.id==="delete")opts=`<div class="row"><label>Pages (e.g. 1-3,5) <input id="o1" placeholder="1-3,5"></label></div>`;
+ if(t.id==="rotate")opts=`<div class="row"><label>Angle <select id="o1"><option value="90">90° clockwise</option><option value="180">180°</option><option value="270">90° counter-clockwise</option></select></label><label>Pages (blank = all) <input id="o2" placeholder="1-3,5"></label></div>`;
+ const body=t.id==="text"?`<textarea id="txt" aria-label="Text for the PDF" placeholder="Type or paste text. Latin characters only for now."></textarea>`:
+ `<div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose files">Drop ${pdfs?"PDF":"image"} files here or <u>choose files</u><br><small>${pdfs?"PDF":"JPG, PNG or WebP"} · up to 50 MB each</small></div><input type="file" id="fi" hidden accept="${accept}" ${multi?"multiple":""}><ul class="files" id="fl"></ul>`;
+ sheet.innerHTML=`<h3 id="st"><span class="hi" aria-hidden="true">${t.g}</span>${t.n}</h3><p class="note">${t.d}. Processed on this device.</p>${body}${opts}<div class="row"><label>File name <input id="o4" maxlength="80" value="${t.n}"></label></div><div class="bar" hidden id="bar"><div></div></div><div id="out"></div><div class="actions"><button class="btn" id="cx">Close</button><button class="btn primary" id="go">${t.n.split(" ")[0]==="Merge"?"Merge":"Create file"}</button></div>`;
+ ov.classList.add("open");
+ $("#cx").onclick=close;
+ if(t.id!=="text"){
+  const drop=$("#drop"),fi=$("#fi");
+  const add=list=>{[...list].forEach(f=>{const ok=pdfs?f.type==="application/pdf"||/\.pdf$/i.test(f.name):/^image\/(jpeg|png|webp)$/.test(f.type);if(!ok){msg("err",`“${f.name}” is not a supported file.`);return}if(f.size>50*1024*1024){msg("err",`“${f.name}” is over the 50 MB limit.`);return}if(!multi)files=[];files.push(f)});listFiles(multi)};
+  drop.onclick=()=>fi.click();drop.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fi.click()}};
+  fi.onchange=()=>{add(fi.files);fi.value=""};
+  drop.ondragover=e=>{e.preventDefault();drop.classList.add("over")};drop.ondragleave=()=>drop.classList.remove("over");
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove("over");add(e.dataTransfer.files)};
+ }
+ $("#go").onclick=()=>run(t);
+}
+function msg(k,t){$("#out").innerHTML=`<div class="msg ${k}" role="${k==="err"?"alert":"status"}">${t}</div>`}
+function listFiles(multi){$("#fl").innerHTML="";files.forEach((f,i)=>{const li=document.createElement("li");li.innerHTML=`${f.type.startsWith("image/")?`<img class="th" alt="" src="${thumb(f)}">`:""}<span>${f.name} · ${(f.size/1024).toFixed(0)} KB</span>`;if(multi){[["↑",-1],["↓",1]].forEach(([s,d])=>{const b=document.createElement("button");b.textContent=s;b.setAttribute("aria-label",d<0?"Move up":"Move down");b.onclick=()=>{const j=i+d;if(j<0||j>=files.length)return;[files[i],files[j]]=[files[j],files[i]];listFiles(multi)};li.appendChild(b)})}
+ const r=document.createElement("button");r.textContent="✕";r.setAttribute("aria-label","Remove "+f.name);r.onclick=()=>{files.splice(i,1);listFiles(multi)};li.appendChild(r);$("#fl").appendChild(li)})}
+function parseRange(str,n){const set=new Set();for(const part of str.split(",")){const p=part.trim();if(!p)continue;const m=p.match(/^(\d+)(?:\s*-\s*(\d+))?$/);if(!m)throw new Error(`“${p}” is not a valid page range.`);const a=+m[1],b=m[2]?+m[2]:a;if(a<1||b<a||b>n)throw new Error(`Range “${p}” is outside this document (1–${n}).`);for(let i=a;i<=b;i++)set.add(i-1)}return [...set].sort((a,b)=>a-b)}
+const prog=v=>{$("#bar").hidden=false;$("#bar div").style.width=Math.round(v*100)+"%"};
+async function loadPdf(f){const buf=await f.arrayBuffer();try{return await PDFDocument.load(buf)}catch(e){throw new Error(/encrypt/i.test(e.message)?`“${f.name}” is password protected. Unlock it first.`:`“${f.name}” could not be read as a PDF.`)}}
+async function imgBytes(f){if(f.type==="image/webp"){const bm=await createImageBitmap(f);const c=document.createElement("canvas");c.width=bm.width;c.height=bm.height;c.getContext("2d").drawImage(bm,0,0);const b=await new Promise(r=>c.toBlob(r,"image/png"));return {bytes:await b.arrayBuffer(),png:true}}return {bytes:await f.arrayBuffer(),png:f.type==="image/png"}}
+async function run(t){
+ aborted=false;$("#out").innerHTML="";const go=$("#go");
+ try{
+  let out,name=((($("#o4")||{}).value||"").replace(/[\\/:*?"<>|&]+/g,"").trim()||"pranova-"+t.id)+".pdf";
+  if(t.id!=="text"&&!files.length)throw new Error("Add at least one file first.");
+  if(t.id==="merge"&&files.length<2)throw new Error("Add at least two PDFs to merge.");
+  go.disabled=true;go.textContent="Working…";
+  const cancel=$("#cx");cancel.textContent="Cancel";cancel.onclick=()=>{aborted=true;msg("err","Cancelled. Nothing was created.");go.disabled=false;go.textContent="Create file";cancel.textContent="Close";cancel.onclick=close};
+  const doc=await PDFDocument.create();
+  if(t.id==="img"){const fit=$("#o1").value==="fit";for(let i=0;i<files.length;i++){if(aborted)return;const {bytes,png}=await imgBytes(files[i]);const im=png?await doc.embedPng(bytes):await doc.embedJpg(bytes);
+   if(fit){doc.addPage([im.width,im.height]).drawImage(im,{x:0,y:0,width:im.width,height:im.height})}else{const L=$("#o2").value==="l",W=L?841.89:595.28,H=L?595.28:841.89,m=+$("#o3").value,s=Math.min((W-2*m)/im.width,(H-2*m)/im.height,1);const w=im.width*s,h=im.height*s;doc.addPage([W,H]).drawImage(im,{x:(W-w)/2,y:(H-h)/2,width:w,height:h})}prog((i+1)/files.length)}}
+  else if(t.id==="text"){const txt=$("#txt").value;if(!txt.trim())throw new Error("Enter some text first.");const font=await doc.embedFont(StandardFonts.Helvetica);if(/[^\x00-\xFF\n\r\t]/.test(txt))throw new Error("This basic version only supports Latin characters. Other scripts need an embedded font.");
+   const W=595.28,H=841.89,m=50,fs=12,lh=17;let page=doc.addPage([W,H]),y=H-m;
+   for(const raw of txt.split(/\r?\n/)){let line="";const words=raw.split(" ");const flush=l=>{if(y<m+lh){page=doc.addPage([W,H]);y=H-m}page.drawText(l,{x:m,y,size:fs,font,color:rgb(.1,.1,.1)});y-=lh};
+    for(const w of words){const test=line?line+" "+w:w;if(font.widthOfTextAtSize(test,fs)>W-2*m&&line){flush(line);line=w}else line=test}flush(line)}prog(1)}
+  else if(t.id==="merge"){for(let i=0;i<files.length;i++){if(aborted)return;const src=await loadPdf(files[i]);(await doc.copyPages(src,src.getPageIndices())).forEach(p=>doc.addPage(p));prog((i+1)/files.length)}}
+  else{const src=await loadPdf(files[0]);const n=src.getPageCount();
+   if(t.id==="extract"){const idx=parseRange($("#o1").value,n);if(!idx.length)throw new Error("Enter the pages to keep.");(await doc.copyPages(src,idx)).forEach(p=>doc.addPage(p))}
+   else if(t.id==="delete"){const del=new Set(parseRange($("#o1").value,n));if(!del.size)throw new Error("Enter the pages to delete.");if(del.size>=n)throw new Error("You can’t delete every page.");const keep=src.getPageIndices().filter(i=>!del.has(i));(await doc.copyPages(src,keep)).forEach(p=>doc.addPage(p))}
+   else if(t.id==="rotate"){const a=+$("#o1").value;const rg=$("#o2").value.trim();const idx=rg?parseRange(rg,n):src.getPageIndices();const set=new Set(idx);(await doc.copyPages(src,src.getPageIndices())).forEach((p,i)=>{if(set.has(i))p.setRotation(degrees((p.getRotation().angle+a)%360));doc.addPage(p)})}
+   prog(1)}
+  if(aborted)return;
+  out=await doc.save();const url=URL.createObjectURL(new Blob([out],{type:"application/pdf"}));urls.push(url);
+  toast("PDF ready to download");$("#out").innerHTML=`<div class="msg ok" role="status">Done: ${doc.getPageCount()} page(s), ${(out.length/1024).toFixed(0)} KB. <a class="btn primary" style="display:inline-block;margin-left:8px;text-decoration:none" href="${url}" download="${name}">Download PDF</a></div>`;
+ }catch(e){msg("err",e.message||"Something went wrong. Please try again.");$("#bar").hidden=true}
+ finally{if(!aborted||true){go.disabled=false;go.textContent="Create file";const c=$("#cx");if(c){c.textContent="Close";c.onclick=close}}}
+}
+/* ---- in-app scanner ---- */
+let scan=null;
+const FILTERS=[["orig","Original"],["magic","Color"],["clean","Clean"],["gray","Grayscale"],["bw","B&W document"]];
+function otsu(h,n){let s=0;for(let i=0;i<256;i++)s+=i*h[i];let sb=0,wb=0,m=0,best=0;for(let i=0;i<256;i++){wb+=h[i];if(!wb)continue;const wf=n-wb;if(!wf)break;sb+=i*h[i];const d=sb/wb-(s-sb)/wf,v=wb*wf*d*d;if(v>m){m=v;best=i}}return best}
+function detectQuad(src,w0,h0){
+ const w=160,h=Math.round(w*h0/w0),c=detectQuad.c||(detectQuad.c=document.createElement("canvas"));c.width=w;c.height=h;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(src,0,0,w,h);
+ const d=x.getImageData(0,0,w,h).data,g=new Uint8Array(w*h),hist=new Array(256).fill(0);
+ for(let i=0;i<w*h;i++){const v=(d[i*4]*.3+d[i*4+1]*.59+d[i*4+2]*.11)|0;g[i]=v;hist[v]++}
+ const th=otsu(hist,w*h);let best=null;
+ for(const pol of [1,0]){
+  const m=new Uint8Array(w*h);for(let i=0;i<w*h;i++)m[i]=(pol?g[i]>th:g[i]<=th)?1:0;
+  const seen=new Uint8Array(w*h),q=new Int32Array(w*h);let big=null;
+  for(let s=0;s<w*h;s++){if(!m[s]||seen[s])continue;let a=0,b=0;q[b++]=s;seen[s]=1;const pts=[];
+   while(a<b){const p=q[a++];pts.push(p);const px=p%w,py=(p/w)|0;
+    if(px>0&&m[p-1]&&!seen[p-1]){seen[p-1]=1;q[b++]=p-1}if(px<w-1&&m[p+1]&&!seen[p+1]){seen[p+1]=1;q[b++]=p+1}if(py>0&&m[p-w]&&!seen[p-w]){seen[p-w]=1;q[b++]=p-w}if(py<h-1&&m[p+w]&&!seen[p+w]){seen[p+w]=1;q[b++]=p+w}}
+   if(!big||pts.length>big.length)big=pts}
+  if(!big)continue;
+  let tl,tr,br,bl,a1=1e9,a2=-1e9,b1=1e9,b2=-1e9;
+  for(const p of big){const px=p%w,py=(p/w)|0,s=px+py,e=px-py;if(s<a1){a1=s;tl=[px,py]}if(s>a2){a2=s;br=[px,py]}if(e>b2){b2=e;tr=[px,py]}if(e<b1){b1=e;bl=[px,py]}}
+  const Q=[tl,tr,br,bl];let ar=0;for(let i=0;i<4;i++){const A=Q[i],B=Q[(i+1)%4];ar+=A[0]*B[1]-B[0]*A[1]}ar=Math.abs(ar)/2;
+  const ratio=big.length/(w*h),fill=ar?big.length/ar:0;
+  if(ratio>.12&&ratio<.96&&fill>.8&&(!best||fill>best.fill))best={fill,q:Q.map(p=>[p[0]/w,p[1]/h])}}
+ return best?best.q:null}
+function warp(src,sw,sh,q){
+ const P=q.map(p=>[p[0]*sw,p[1]*sh]),L=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+ let W=(L(P[0],P[1])+L(P[3],P[2]))/2,H=(L(P[0],P[3])+L(P[1],P[2]))/2;const k=Math.min(1,1600/Math.max(W,H));W=Math.max(1,Math.round(W*k));H=Math.max(1,Math.round(H*k));
+ const sc=document.createElement("canvas");sc.width=sw;sc.height=sh;const sx=sc.getContext("2d");sx.drawImage(src,0,0,sw,sh);const sd=sx.getImageData(0,0,sw,sh).data;
+ const o=document.createElement("canvas");o.width=W;o.height=H;const ox=o.getContext("2d"),od=ox.createImageData(W,H),D=od.data;
+ for(let y=0;y<H;y++){const v=y/H,lx=P[0][0]+(P[3][0]-P[0][0])*v,ly=P[0][1]+(P[3][1]-P[0][1])*v,rx=P[1][0]+(P[2][0]-P[1][0])*v,ry=P[1][1]+(P[2][1]-P[1][1])*v;
+  for(let x=0;x<W;x++){const u=x/W,X=Math.min(sw-1,Math.max(0,Math.round(lx+(rx-lx)*u))),Y=Math.min(sh-1,Math.max(0,Math.round(ly+(ry-ly)*u))),si=(Y*sw+X)*4,di=(y*W+x)*4;D[di]=sd[si];D[di+1]=sd[si+1];D[di+2]=sd[si+2];D[di+3]=255}}
+ ox.putImageData(od,0,0);return o}
+function filt(c,name){const B=scan?scan.b:0,C=scan?scan.c:1;if(name==="orig"&&!B&&C===1)return c;const o=document.createElement("canvas");o.width=c.width;o.height=c.height;const x=o.getContext("2d");x.drawImage(c,0,0);const im=x.getImageData(0,0,c.width,c.height),d=im.data,n=c.width*c.height,h=new Array(256).fill(0);
+ for(let i=0;i<n;i++)h[(d[i*4]*.3+d[i*4+1]*.59+d[i*4+2]*.11)|0]++;
+ let a=0,lo=0,hi=255;for(let i=0;i<256;i++){a+=h[i];if(a>n*.02){lo=i;break}}a=0;for(let i=255;i>=0;i--){a+=h[i];if(a>n*.02){hi=i;break}}const sc=255/Math.max(1,hi-lo),th=otsu(h,n)*.92;
+ let bd=null;if(name==="clean"){const sm=document.createElement("canvas");sm.width=Math.max(2,c.width/24|0);sm.height=Math.max(2,c.height/24|0);sm.getContext("2d").drawImage(c,0,0,sm.width,sm.height);const bc=document.createElement("canvas");bc.width=c.width;bc.height=c.height;const bx=bc.getContext("2d");bx.imageSmoothingEnabled=true;bx.drawImage(sm,0,0,c.width,c.height);bd=bx.getImageData(0,0,c.width,c.height).data}
+ for(let i=0;i<n*4;i+=4){let r=d[i],g=d[i+1],b=d[i+2];const l=r*.3+g*.59+b*.11;
+  if(name==="clean"){r=r/(bd[i]||1)*245;g=g/(bd[i+1]||1)*245;b=b/(bd[i+2]||1)*245}else if(name==="bw"){r=g=b=l>th?255:0}else if(name==="gray"){r=g=b=(l-lo)*sc}else if(name!=="orig"){r=(r-lo)*sc;g=(g-lo)*sc;b=(b-lo)*sc}
+  d[i]=(r-128)*C+128+B;d[i+1]=(g-128)*C+128+B;d[i+2]=(b-128)*C+128+B}x.putImageData(im,0,0);return o}
+function stopScan(){if(!scan)return;clearInterval(scan.iv);cancelAnimationFrame(scan.raf);scan.stream&&scan.stream.getTracks().forEach(t=>t.stop());scan=null}
+const mv=(i,d)=>{const j=i+d;if(j<0||j>=scan.pages.length)return;[scan.pages[i],scan.pages[j]]=[scan.pages[j],scan.pages[i]];renderPages()};
+function renderPages(an){const pg=$("#pg");if(!pg||!scan)return;pg.innerHTML="";const n=scan.pages.length;
+ scan.pages.forEach((p,i)=>{if(!p.th){const k=220/Math.max(p.raw.width,p.raw.height),t=document.createElement("canvas");t.width=Math.max(1,p.raw.width*k|0);t.height=Math.max(1,p.raw.height*k|0);t.getContext("2d").drawImage(p.raw,0,0,t.width,t.height);p.th=t}
+  const d=document.createElement("div");d.className="pc"+(an&&i===n-1?" new":"");const fc=filt(p.th,scan.f);fc.style.cursor="zoom-in";fc.onclick=()=>previewPage(i);d.append(fc);const pb=document.createElement("div");pb.className="pb";
+  [["✎ Adjust","Adjust corners of page "+(i+1),()=>editPage(i),1],["↻ Rotate","Rotate page "+(i+1),()=>{p.rot=(p.rot+1)%4;p.raw=regen(p);p.th=null;renderPages()},1],["←","Move earlier",()=>mv(i,-1)],["✕","Delete page "+(i+1),()=>{scan.pages.splice(i,1);renderPages()}],["→","Move later",()=>mv(i,1)]].forEach(([s,l,f,w])=>{const b=document.createElement("button");b.textContent=s;b.setAttribute("aria-label",l);b.onclick=f;if(w)b.className="w";pb.append(b)});
+  d.append(pb);pg.append(d)});
+ $("#sv").disabled=!n;$("#sv").textContent="Save PDF"+(n?` (${n})`:"")}
+function openScan(smart){
+ sheet.className="sheet scan";
+ sheet.innerHTML=`<h3 id="st">${smart?"Smart Scan":"Scan documents"}</h3><div class="steps"><span>1 · Point at the page</span><span>2 · Hold steady</span><span>3 · Adjust and save</span></div><p class="note">Uses your camera inside this app. Nothing is uploaded.</p><div class="scanbody"><div><div class="vf" id="vf"><video id="vid" playsinline muted autoplay></video><canvas id="ovl"></canvas><div class="sweep"></div><div class="flash" id="fsh"></div><div class="hint" id="hint">Starting camera…</div></div><div class="ctl"><button class="btn" id="mode"></button><button class="shut" id="shut" aria-label="Capture page"></button><button class="btn" id="tor" hidden aria-pressed="false" aria-label="Flash">⚡ Flash</button><button class="btn" id="flip" hidden aria-label="Switch camera">⟲ Flip</button><button class="btn" id="imp">Import photo</button></div><input type="file" id="ifile" hidden accept="image/*" multiple></div><div><label class="nm">File name<input id="nm" maxlength="80" value="Scan ${new Date().toISOString().slice(0,10)}"></label><div class="chips" id="fc" role="group" aria-label="Filter" style="margin:12px 0 0"></div><div class="adj"><label>Brightness <input type="range" id="br" min="-60" max="60" value="0" aria-label="Brightness"></label><label>Contrast <input type="range" id="co" min="70" max="160" value="100" aria-label="Contrast"></label></div><div class="pg" id="pg"></div><div id="out"></div><div class="actions"><button class="btn" id="cx">Close</button><button class="btn primary" id="sv" disabled>Save PDF</button></div></div></div>`;
+ ov.classList.add("open");$("#cx").onclick=close;
+ scan={pages:[],f:"magic",smart,b:0,c:1,facing:"environment",quad:null,disp:null,stable:0,cool:0,stream:null,iv:0,raf:0,saved:false};
+ const vid=$("#vid"),vf=$("#vf"),ovl=$("#ovl"),cx=ovl.getContext("2d"),hint=t=>{const h=$("#hint");if(h)h.textContent=t};
+ const setMode=()=>{$("#mode").textContent=scan.smart?"Auto: on":"Auto: off";$("#mode").setAttribute("aria-pressed",String(scan.smart));vf.classList.toggle("smart",scan.smart)};setMode();$("#mode").onclick=()=>{scan.smart=!scan.smart;setMode()};
+ const chips=()=>{const fc=$("#fc");fc.innerHTML="";FILTERS.forEach(([k,l])=>{const b=document.createElement("button");b.className="chip";b.textContent=l;b.setAttribute("aria-pressed",String(scan.f===k));b.onclick=()=>{scan.f=k;chips();renderPages()};fc.append(b)})};chips();
+ const addPage=(src,w,h,q)=>{const sc=document.createElement("canvas");sc.width=w;sc.height=h;sc.getContext("2d").drawImage(src,0,0,w,h);const p={src:sc,quad:q,rot:0};p.raw=regen(p);scan.pages.push(p);renderPages(true)};
+ const capture=()=>{if(!vid.videoWidth)return;scan.cool=Date.now()+2200;scan.stable=0;const f=$("#fsh");f.classList.remove("go");void f.offsetWidth;f.classList.add("go");addPage(vid,vid.videoWidth,vid.videoHeight,scan.quad)};
+ $("#shut").onclick=capture;
+ const camUI=async s=>{const tr=s.getVideoTracks()[0],cap=tr.getCapabilities?tr.getCapabilities():{};$("#tor").hidden=!cap.torch;$("#tor").setAttribute("aria-pressed","false");scan.torch=false;try{const dv=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==="videoinput");$("#flip").hidden=dv.length<2}catch(e){$("#flip").hidden=true}};
+ $("#tor").onclick=async()=>{try{scan.torch=!scan.torch;await scan.stream.getVideoTracks()[0].applyConstraints({advanced:[{torch:scan.torch}]});$("#tor").setAttribute("aria-pressed",String(scan.torch))}catch(e){scan.torch=false;hint("Flash isn’t available on this camera.")}};
+ $("#flip").onclick=async()=>{try{const f=scan.facing==="user"?"environment":"user",s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:f},width:{ideal:1920},height:{ideal:1080}},audio:false});scan.stream.getTracks().forEach(t=>t.stop());scan.facing=f;scan.stream=s;vid.srcObject=s;await vid.play();vf.style.setProperty("--ar",(vid.videoWidth/vid.videoHeight).toFixed(3));camUI(s)}catch(e){hint("Couldn’t switch camera.")}};
+ $("#br").oninput=$("#co").oninput=()=>{scan.b=+$("#br").value;scan.c=$("#co").value/100;clearTimeout(scan.rt);scan.rt=setTimeout(()=>renderPages(),120)};
+ $("#imp").onclick=()=>$("#ifile").click();
+ $("#ifile").onchange=async e=>{for(const f of e.target.files){try{const bm=await createImageBitmap(f),k=Math.min(1,2000/Math.max(bm.width,bm.height)),c=document.createElement("canvas");c.width=Math.round(bm.width*k);c.height=Math.round(bm.height*k);c.getContext("2d").drawImage(bm,0,0,c.width,c.height);bm.close&&bm.close();addPage(c,c.width,c.height,detectQuad(c,c.width,c.height))}catch(er){msg("err",`“${f.name}” could not be read as an image.`)}}e.target.value=""};
+ $("#sv").onclick=async()=>{const b=$("#sv");b.disabled=true;b.textContent="Building PDF…";try{const doc=await PDFDocument.create();for(const p of scan.pages){const c=filt(p.raw,scan.f),blob=await new Promise(r=>c.toBlob(r,"image/jpeg",.88)),im=await doc.embedJpg(await blob.arrayBuffer()),W=595.28,H=W*c.height/c.width;doc.addPage([W,H]).drawImage(im,{x:0,y:0,width:W,height:H})}
+  const out=await doc.save(),name=($("#nm").value.replace(/[\\/:*?"<>|&]+/g,"").trim()||"Scan")+".pdf",url=URL.createObjectURL(new Blob([out],{type:"application/pdf"}));urls.push(url);scan.saved=true;toast("PDF saved");
+  $("#out").innerHTML=`<div class="msg ok" role="status">Saved ${scan.pages.length} page(s) as “${name}” (${(out.length/1024).toFixed(0)} KB). <a class="btn primary" style="display:inline-block;margin-left:8px;text-decoration:none" href="${url}" download="${name}">Download PDF</a></div>`;try{const fl=new File([out],name,{type:"application/pdf"});if(navigator.canShare&&navigator.canShare({files:[fl]})){const sb=document.createElement("button");sb.className="btn";sb.textContent="Share";sb.onclick=()=>navigator.share({files:[fl],title:name}).catch(()=>{});$("#out .msg").append(sb)}}catch(e2){}}catch(er){msg("err","Couldn’t build the PDF. "+(er.message||""))}renderPages()};
+ const loop=()=>{if(!scan)return;const r=vf.getBoundingClientRect();if(ovl.width!==(r.width|0)){ovl.width=r.width|0;ovl.height=r.height|0}cx.clearRect(0,0,ovl.width,ovl.height);const q=scan.quad;
+  scan.disp=q?(scan.disp?scan.disp.map((p,i)=>[p[0]+(q[i][0]-p[0])*.25,p[1]+(q[i][1]-p[1])*.25]):q):null;
+  if(scan.disp){const P=scan.disp.map(p=>[p[0]*ovl.width,p[1]*ovl.height]),ok=scan.stable>2;cx.beginPath();P.forEach((p,i)=>i?cx.lineTo(...p):cx.moveTo(...p));cx.closePath();cx.fillStyle=ok?"rgba(120,220,150,.28)":"rgba(120,220,150,.14)";cx.fill();cx.lineWidth=3;cx.strokeStyle=ok?"#7ee79a":"#d8f5df";cx.shadowColor="#7ee79a";cx.shadowBlur=14;cx.stroke();cx.shadowBlur=0;P.forEach(p=>{cx.beginPath();cx.arc(p[0],p[1],6,0,7);cx.fillStyle="#fff";cx.fill()})}
+  if(!scan.disp){cx.setLineDash([10,8]);cx.strokeStyle="rgba(255,255,255,.75)";cx.lineWidth=2;cx.strokeRect(ovl.width*.08,ovl.height*.08,ovl.width*.84,ovl.height*.84);cx.setLineDash([])}
+  scan.raf=requestAnimationFrame(loop)};
+ (async()=>{try{if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw{name:"NoApi"};
+  const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
+  if(!scan){s.getTracks().forEach(t=>t.stop());return}
+  scan.stream=s;vid.srcObject=s;await vid.play();vf.style.setProperty("--ar",(vid.videoWidth/vid.videoHeight).toFixed(3));hint("Point at a document");camUI(s);loop();
+  scan.iv=setInterval(()=>{if(!scan||!vid.videoWidth||document.hidden)return;const q=detectQuad(vid,vid.videoWidth,vid.videoHeight),p=scan.quad;scan.quad=q;
+   scan.stable=(q&&p&&q.every((pt,i)=>Math.hypot(pt[0]-p[i][0],pt[1]-p[i][1])<.03))?scan.stable+1:0;
+   hint(!q?"Looking for a document…":scan.smart?(scan.stable>2?"Hold steady…":"Document found"):"Document found. Tap capture");
+   if(scan.smart&&q&&scan.stable>=7&&Date.now()>scan.cool)capture()},170)
+  }catch(e){hint(e.name==="NotAllowedError"?"Camera permission was denied. Allow it in browser settings, or use Import photo.":"Camera isn’t available here. Use Import photo instead.");$("#shut").disabled=true}})();
+}
+$("#startScan").onclick=()=>openScan(true);
+document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{$("#plans").dataset.bill=b.dataset.bill;document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)))});
+$("#scanNav").onclick=e=>{e.preventDefault();openScan(true)};
+document.querySelectorAll("nav.tabs a").forEach(a=>a.addEventListener("click",()=>{if(a.id==="scanNav")return;if(a.id!=="favNav"){showFav=false;renderChips();renderGrid()}document.querySelectorAll("nav.tabs a").forEach(x=>x.classList.toggle("on",x===a))}));
+if(!store.get("pp_welcomed",false)){setTimeout(()=>{store.set("pp_welcomed",true);sheet.className="sheet";sheet.innerHTML=`<div class="eyebrow">Welcome to Pranova PDF</div><h3 id="st" style="font-size:1.6rem;margin:4px 0 8px">Your Documents. Our Responsibility.</h3><p class="note" style="font-size:.95rem">Create, merge, organize and scan PDFs. The free tools work on your device. Try Smart Scan, or browse the tools.</p><div class="actions"><button class="btn" id="w1">Browse tools</button><button class="btn primary" id="w2">Try Smart Scan</button></div>`;ov.classList.add("open");$("#w1").onclick=close;$("#w2").onclick=()=>{close();openScan(true)}},600)}
+/* ---- panels, back button, toast ---- */
+let lastC=null,lastF=null,pushed=false,wasOpen=false;
+document.addEventListener("click",e=>{const c=e.target.closest&&e.target.closest(".card");lastC=c?c.getBoundingClientRect():null;lastF=e.target.closest?e.target.closest("button,a"):null},true);
+new MutationObserver(()=>{const o=ov.classList.contains("open");if(o&&!wasOpen){wasOpen=true;const r=lastC;ov.style.setProperty("--dx",r?(r.left+r.width/2-innerWidth/2)+"px":"0px");ov.style.setProperty("--dy",r?(r.top+r.height/2-innerHeight/2)+"px":"40px");lastC=null;try{history.pushState({pp:1},"");pushed=true}catch(e){pushed=false}if(!sheet.contains(document.activeElement)){sheet.tabIndex=-1;sheet.focus({preventScroll:true})}}else if(!o&&wasOpen){wasOpen=false;pushed=false}}).observe(ov,{attributes:true,attributeFilter:["class"]});
+new MutationObserver(()=>{if(sheet.firstChild&&!sheet.querySelector(".xbtn")){const b=document.createElement("button");b.className="xbtn";b.textContent="✕";b.setAttribute("aria-label","Close");b.onclick=()=>close();sheet.prepend(b)}}).observe(sheet,{childList:true});
+addEventListener("popstate",()=>{if(ov.classList.contains("open")){close(true);if(!ov.classList.contains("closing"))try{history.pushState({pp:1},"")}catch(e){}}});
+function toast(t){let e=$("#toast");if(!e){e=document.createElement("div");e.id="toast";e.className="toast";e.setAttribute("role","status");document.body.append(e)}e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2200)}
+const thumb=f=>{if(!f._u){f._u=URL.createObjectURL(f);urls.push(f._u)}return f._u};
+function rot90(c,n){let o=c;for(let i=0;i<n;i++){const t=document.createElement("canvas");t.width=o.height;t.height=o.width;const x=t.getContext("2d");x.translate(t.width,0);x.rotate(Math.PI/2);x.drawImage(o,0,0);o=t}return o}
+function regen(p){return rot90(p.quad?warp(p.src,p.src.width,p.src.height,p.quad):p.src,p.rot)}
+function editPage(i){const p=scan.pages[i];let q=(p.quad||[[.06,.06],[.94,.06],[.94,.94],[.06,.94]]).map(a=>a.slice());scan.cool=Infinity;
+ const e=document.createElement("div");e.className="editor";e.setAttribute("role","dialog");e.setAttribute("aria-label","Adjust corners");e.innerHTML=`<div style="text-align:center"><b>Adjust corners</b><div class="note">Drag the dots onto the corners of the page</div></div><div class="ed-stage" id="eds"><canvas id="edc"></canvas><svg id="edv"></svg></div><div class="actions"><button class="btn" id="edx">Cancel</button><button class="btn" id="edf">Full frame</button><button class="btn primary" id="edo">Apply</button></div>`;document.body.append(e);
+ const st=$("#eds",e),cv=$("#edc",e),sv=$("#edv",e),ar=p.src.width/p.src.height,W=Math.min(innerWidth*.92,innerHeight*.6*ar,900),H=W/ar;
+ st.style.width=W+"px";st.style.height=H+"px";cv.width=p.src.width;cv.height=p.src.height;cv.getContext("2d").drawImage(p.src,0,0);sv.setAttribute("viewBox",`0 0 ${W} ${H}`);
+ const draw=()=>{sv.innerHTML=`<polygon points="${q.map(a=>a[0]*W+","+a[1]*H).join(" ")}" fill="rgba(126,231,154,.2)" stroke="#7ee79a" stroke-width="3"/>`+q.map((a,k)=>`<circle data-k="${k}" cx="${a[0]*W}" cy="${a[1]*H}" r="28" fill="transparent"/><circle cx="${a[0]*W}" cy="${a[1]*H}" r="10" fill="#fff" stroke="#2f5a40" stroke-width="3" pointer-events="none"/>`).join("")};draw();
+ let k=-1;sv.onpointerdown=ev=>{const t=ev.target.dataset&&ev.target.dataset.k;if(t==null)return;k=+t;sv.setPointerCapture(ev.pointerId)};
+ sv.onpointermove=ev=>{if(k<0)return;const r=sv.getBoundingClientRect();q[k]=[Math.min(1,Math.max(0,(ev.clientX-r.left)/r.width)),Math.min(1,Math.max(0,(ev.clientY-r.top)/r.height))];draw()};sv.onpointerup=sv.onpointercancel=()=>{k=-1};
+ const done=()=>{e.remove();if(scan)scan.cool=Date.now()+1500};
+ $("#edx",e).onclick=done;$("#edf",e).onclick=()=>{q=[[0,0],[1,0],[1,1],[0,1]];draw()};$("#edo",e).onclick=()=>{p.quad=q;p.raw=regen(p);p.th=null;done();renderPages()}}
+function previewPage(i){const c=filt(scan.pages[i].raw,scan.f),ar=c.width/c.height,W=Math.min(innerWidth*.92,innerHeight*.7*ar,900),e=document.createElement("div");e.className="editor";e.innerHTML=`<div class="ed-stage" style="width:${W}px;height:${W/ar}px"><img alt="Page ${i+1} preview" src="${c.toDataURL("image/jpeg",.85)}"></div><div class="actions"><button class="btn primary" id="pvx">Close preview</button></div>`;document.body.append(e);$("#pvx",e).onclick=()=>e.remove()}
+renderChips();renderGrid();
+</script>
+</body>
+</html>

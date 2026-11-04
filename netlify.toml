@@ -1,0 +1,17 @@
+# Netlify settings for Pranova PDF (static site, no build step needed)
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Allows the in-app scanner to use the camera on your own site
+    Permissions-Policy = "camera=(self), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    # Makes sure people get your newest version when they reload
+    Cache-Control = "no-cache"
